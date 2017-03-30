@@ -41,6 +41,7 @@ module.exports = {
               options: { presets: ['es2015', 'react'] }
           }],
       },
+
       {
           test: /\.scss$/,
           loader: ExtractTextPlugin.extract({
@@ -70,13 +71,23 @@ module.exports = {
                   }
               ]
           })
-      }]
+      },
+      {
+          test: /\.(jpe?g|png|svg)$/,
+          use: [
+              'file-loader?name=[path][hash:6][name].[ext]',
+          ]
+      }
+      ]
     },
 
     plugins: [
         new webpack.DefinePlugin({
             NODE_ENV: JSON.stringify(NODE_ENV)
         }),
-        new ExtractTextPlugin("app.css")
+        new ExtractTextPlugin({
+            filename: '[name].bundle.css',
+            allChunks: true,
+        })
     ]
 };
