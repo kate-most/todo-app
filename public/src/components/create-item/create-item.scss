@@ -1,0 +1,23 @@
+@import "../../common/variables/create-item";
+
+.input {
+  padding: 5px;
+  border: 1px solid $create-item-input-border-color;
+  margin-right: 10px;
+  outline: none;
+}
+
+.button {
+  padding: 5px;
+  border: 1px solid $create-item-button-border-color;
+  border-radius: 0;
+  background-color: $create-item-button-bg-color;
+  color: $create-item-button-color;
+  cursor: pointer;
+  outline: none;
+
+  &:hover {
+    color: $create-item-button-color-hover;
+    border-color: $create-item-button-border-color-hover;
+  }
+}

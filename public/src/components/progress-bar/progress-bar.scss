@@ -1,0 +1,12 @@
+@import "../../common/variables/progress";
+
+.container {
+  height: 10px;
+  border: 1px solid $progress-bar-container-border-color;
+}
+
+.indicator {
+  width: 25%;
+  height: 10px;
+  background-color: $progress-bar-indicator-bg-color;
+}

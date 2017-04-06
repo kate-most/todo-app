@@ -1,0 +1,32 @@
+@import "../../common/variables/grid";
+
+.reducer {
+  padding: 20px 20px 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.content {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.categories {
+  flex: 1;
+  max-height: 100vh;
+  overflow-y: scroll;
+}
+
+.todos {
+  flex: 2;
+  max-height: 100vh;
+  overflow: scroll;
+  border: 1px solid $grid-todos-border-color;
+  margin-left: 10px;
+}

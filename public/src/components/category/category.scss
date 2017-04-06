@@ -1,0 +1,31 @@
+@import "../../common/variables/category";
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px;
+  border: 1px solid $category-border-color;
+  border-radius: 3px;
+
+  &:not(:last-child) {
+    border-bottom: none;
+  }
+}
+
+.title {
+  margin-right: 10px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+
+  &-inner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}

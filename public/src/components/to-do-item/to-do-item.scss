@@ -1,0 +1,19 @@
+@import "../../common/variables/to-do-item";
+
+.container {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $to-do-item-border-color;
+  }
+}
+
+.input {
+  margin: 0 20px 0 0;
+}
+
+.label {
+  margin-right: 10px;
+}

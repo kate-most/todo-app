@@ -1,0 +1,36 @@
+@import "../../common/variables/search";
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+}
+
+.checkbox {
+  margin-right: 5px;
+}
+
+.label {
+  color: $search-label-color;
+}
+
+.input {
+  padding: 5px;
+  border-radius: 0;
+  outline: none;
+
+  &::after {
+    contant: '';
+    display: block;
+    width: 5px;
+    height: 5px;
+    background-color: red;
+  }
+}

@@ -12,10 +12,10 @@ module.exports = {
     },
 
     output: {
-        library: '[name]',
-        filename: '[name].bundle.js',
+        library: 'app',
+        filename: 'app.bundle.js',
         path: path.resolve(__dirname, './public/build/assets'),
-        publicPath: '/assets',
+        publicPath: '/assets'
     },
 
     devServer: {
@@ -35,7 +35,7 @@ module.exports = {
     module: {
       rules: [{
           test: /\.(js|jsx)$/,
-          exclude: /(node_modules|bower_components)/,
+          exclude: /node_modules/,
           use: [{
               loader: 'babel-loader',
               options: { presets: ['es2015', 'react'] }
@@ -43,16 +43,18 @@ module.exports = {
       },
 
       {
-          test: /\.scss$/,
-          loader: ExtractTextPlugin.extract({
+          test: /\.(css|scss)$/,
+          use: ExtractTextPlugin.extract({
               fallback: 'style-loader',
-              loader: [
+              use: [
                   {
                       loader: 'css-loader',
                       query: {
                           modules: true,
-                          importLoaders: 2,
-                          sourceMap: true
+                          camelCase: true,
+                          importLoaders: 1,
+                          sourceMap: true,
+                          localIdentName: '[name]__[local]___[hash:base64:5]'
                       }
                   },
                   {
@@ -86,7 +88,7 @@ module.exports = {
             NODE_ENV: JSON.stringify(NODE_ENV)
         }),
         new ExtractTextPlugin({
-            filename: '[name].bundle.css',
+            filename: 'app.bundle.css',
             allChunks: true,
         })
     ]

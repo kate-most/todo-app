@@ -1,13 +1,19 @@
-import React from 'react';
-import { render } from 'react-dom';
-import normalize from 'normalize';
-import './app.scss';
+import * as React from "react";
+import { render } from "react-dom";
+import * as styles from "./app.scss";
+import Header from "./components/header/header.jsx";
+import Grid from "./components/grid/grid.jsx"
 
-const HelloWorld = () => {
-    return <h1>Hello World! I am makaroshki</h1>
-};
+class App extends React.Component {
+    render() {
+        return <div key="app" className={ styles.app }>
+            <Header title="To-Do List"/>
+            <Grid/>
+        </div>
+    }
+}
 
 render(
-    <HelloWorld />,
-    document.getElementById('react-root')
+    <App/>,
+    document.getElementById("react-root")
 );
