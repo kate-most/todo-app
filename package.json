@@ -13,10 +13,7 @@
   "author": "Kateryna Kukunina",
   "license": "ISC",
   "dependencies": {
-    "@types/react": "^15.0.21",
-    "@types/react-dom": "^0.14.23",
     "autoprefixer-loader": "^3.2.0",
-    "awesome-typescript-loader": "^3.1.2",
     "babel-core": "^6.24.0",
     "babel-loader": "^6.4.1",
     "babel-preset-es2015": "^6.24.0",
@@ -32,7 +29,4 @@
     "style-loader": "^0.16.1",
     "webpack": "^2.3.2"
   },
-  "devDependencies": {
-    "typescript": "^2.2.2"
-  }
 }
