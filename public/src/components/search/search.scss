@@ -1,36 +1,104 @@
-@import "../../common/variables/search";
+@import '../../common/vars';
+@import '../../common/mixins';
 
 .container {
+  position: absolute;
+  top: 25px;
+  right: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.confirm {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 10px;
 }
 
 .checkbox {
-  margin-right: 5px;
+  display: none;
+
+  & + .checkbox-label {
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    background: $search-label-bg-color;
+    cursor: pointer;
+  }
+
+  &:checked {
+
+    & + .checkbox-label {
+      background: $search-label-bg-color-checked;
+    }
+  }
+
+  &-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+  }
+
+  &-title {
+    color: $search-title-color;
+  }
 }
 
-.label {
-  color: $search-label-color;
-}
 
 .input {
-  padding: 5px;
-  border-radius: 0;
-  outline: none;
+  @include input();
 
-  &::after {
-    contant: '';
-    display: block;
-    width: 5px;
-    height: 5px;
-    background-color: red;
+  &-wrap {
+    position: relative;
+  }
+
+  &-close {
+    position: absolute;
+    top: 50%;
+    right: 13px;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    opacity: .3;
+    outline: none;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &::before,
+    &::after {
+      position: absolute;
+      top: 0;
+      left: 10px;
+      content: '';
+      height: 20px;
+      width: 2px;
+      background-color: $search-close-button-color;
+    }
+
+    &::before {
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      transform: rotate(-45deg);
+    }
+  }
+}
+
+.button {
+  @include button();
+
+  &-link {
+    color: $search-link-color;
+    text-decoration: none;
+  }
+
+  &:hover {
+
+    .button-link {
+      color: $search-link-color-hover;
+    }
   }
 }

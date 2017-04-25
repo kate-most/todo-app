@@ -1,27 +1,30 @@
-@import "../../common/variables/toggler";
+@import '../../common/vars';
+
 
 .item {
+  display: flex;
+  padding: 0 10px;
+  border: none;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+.icon {
   display: inline-flex;
   width: 10px;
   height: 10px;
-  padding: 0;
   border: 1px solid $toggler-color;
-  margin-right: 10px;
   transform: rotate(45deg);
-  background-color: transparent;
-  outline: none;
-  cursor: pointer;
 
   &_opened {
-    align-self: flex-end;
-    composes: item;
+    composes: icon;
     border-right: none;
     border-bottom: none;
   }
 
   &_closed {
-    align-self: flex-start;
-    composes: item;
+    composes: icon;
     border-top: none;
     border-left: none;
   }

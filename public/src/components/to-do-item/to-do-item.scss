@@ -1,9 +1,10 @@
-@import "../../common/variables/to-do-item";
+@import '../../common/vars';
+
 
 .container {
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
 
   &:not(:last-child) {
     border-bottom: 1px solid $to-do-item-border-color;
@@ -11,9 +12,36 @@
 }
 
 .input {
-  margin: 0 20px 0 0;
+  display: none;
+
+  & + .label {
+    display: block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    border: 1px solid $to-do-item-label-border-color;
+    background: $to-do-item-label-bg-color;
+    cursor: pointer;
+  }
+
+  &:checked {
+
+    & + .label {
+      background: $to-do-item-label-bg-color-checked;
+    }
+  }
 }
 
 .label {
   margin-right: 10px;
+}
+
+.edit {
+  width: 20px;
+  height: 20px;
+  border: none;
+  cursor: pointer;
+  background: url('./../../images/update.png') center no-repeat;
+  background-size: contain;
+  outline: none;
 }

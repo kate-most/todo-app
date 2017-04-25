@@ -1,12 +1,20 @@
-import * as React from 'react';
-import * as styles from "./progress-bar.scss";
+import React, { PropTypes } from 'react';
+import * as styles from './progress-bar.scss';
 
-class Progress extends React.Component {
-    render() {
-        return <div className={ styles.container }>
-            <div className={ styles.indicator }/>
+const ProgressBar = ({ progress }) => {
+    const indicatorStyle = {
+      width: progress + '%'
+    };
+
+    return (
+        <div className={styles.container}>
+            <div className={styles.indicator} style={indicatorStyle}/>
         </div>
-    }
-}
+    )
+};
 
-export default Progress;
+ProgressBar.propTypes = {
+    progress: PropTypes.number.isRequired
+};
+
+export default ProgressBar;

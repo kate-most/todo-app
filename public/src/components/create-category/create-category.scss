@@ -1,0 +1,14 @@
+@import '../../common/vars';
+@import '../../common/mixins';
+
+.form {
+  margin-bottom: 20px;
+}
+
+.input {
+  @include input();
+}
+
+.button {
+  @include button();
+ }

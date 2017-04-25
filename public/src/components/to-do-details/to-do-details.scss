@@ -1,0 +1,81 @@
+@import '../../common/vars';
+@import '../../common/mixins';
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  border: 2px solid $to-do-details-form-border-color;
+}
+
+.button {
+  @include button();
+
+  &:not(:last-child) {
+    margin-right: 10px;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.input {
+  @include input();
+  margin-bottom: 10px;
+}
+
+.checkbox {
+  display: none;
+
+  & + .label {
+    display: block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    border: 1px solid $to-do-details-label-border-color;
+    background: $to-do-details-label-bg-color;
+    cursor: pointer;
+  }
+
+  &:checked {
+
+    & + .label {
+      background: $to-do-details-label-bg-color-checked;
+    }
+  }
+
+  &-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+  }
+}
+
+.textarea {
+  font-size: 12px;
+  line-height: 14px;
+  outline: none;
+}
+
+.message {
+  margin-bottom: 10px;
+
+  &-category-name {
+    font-weight: bold;
+    color: $to-do-details-message-category-name-color;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

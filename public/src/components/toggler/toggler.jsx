@@ -1,12 +1,23 @@
-import * as React from "react";
-import * as styles from "./toggler.scss";
+import React, {PropTypes} from 'react';
+import * as styles from './toggler.scss';
 
-class Toggler extends React.Component {
+const Toggler = ({ isCollapsed, collapseCategory, id }) => {
+    const className = (isCollapsed) ? styles.iconOpened : styles.iconClosed;
+    const title = isCollapsed ? 'ellapse' : 'collapse';
 
-    render() {
-        let className = (this.props.isCollapsed) ? styles.itemOpened : styles.itemClosed;
-        return <button className={ className } title={this.props.isCollapsed} onClick={this.props.onClick}/>
-    }
-}
+    return (
+        <button className={styles.item}
+                title={title}
+                onClick={() => {collapseCategory(id)}}>
+            <div className={className}/>
+        </button>
+    )
+};
+
+Toggler.propTypes = {
+    isCollapsed: PropTypes.bool.isRequired,
+    collapseCategory: PropTypes.func.isRequired,
+    id: PropTypes.string.isRequired
+};
 
 export default Toggler;

@@ -1,34 +1,66 @@
-import * as React from "react";
-import * as styles from "./category.scss";
-import Icon from "../icon/icon.jsx";
-import Toggler from "../toggler/toggler.jsx";
+import React, { PropTypes } from 'react';
+import { Link } from 'react-router';
+import Toggler from './../toggler/toggler.jsx'
+import CategoriesList from './../categories-list/categories-list.jsx';
+import * as styles from './category.scss';
 
-class Category extends React.Component {  constructor(props) {
-    super(props);
-    this.state = {isCollapsed: true};
+const Category = ({ id, parentId, categories, toDos, params, removeCategory, collapseCategory, handleChoseNewCategory, openModal }) => {
 
-    this.Collapse = this.Collapse.bind(this);
-}
+    return (
+        <li className={styles.container}>
+            <div className={styles.inner}>
+                {categories.byId[id].children.length ?
+                    <Toggler isCollapsed={categories.byId[id].isCollapsed}
+                             collapseCategory={collapseCategory}
+                             id={id}/> :
+                    null
+                }
 
-    Collapse() {
-        this.setState(prevState => ({
-            isCollapsed: !prevState.isCollapsed
-        }));
-    }
+                <h4 className={styles.title}>
+                    <Link to={`/${id}`}
+                          className={styles.titleLink}
+                          activeClassName={styles.titleLinkActive}>{categories.byId[id].name}</Link>
+                </h4>
 
-    render() {
-        return <div className={ styles.container }>
-            <Toggler isCollapsed={ this.state.isCollapsed } onClick={this.Collapse}/>
-            <h4 className={ styles.title }>{ this.props.title }</h4>
-            <div className={ styles.actions}>
-                <Icon action="update"/>
-                <div className="category__actions-inner">
-                    <Icon action="delete"/>
-                    <Icon action="create"/>
-                </div>
+                {(params.todo && categories.byId[params.category].toDos.length && toDos.byId[params.todo])  ?
+                    <button type='button' title='move' className={styles.buttonMove} onClick={() => {handleChoseNewCategory(id)}}/> :
+
+                    <div className={styles.buttonsList}>
+                        <button type='button' title='edit' className={styles.buttonEdit} onClick={() => {openModal(id, true)}}/>
+                        <button type='button' title='remove' className={styles.buttonRemove} onClick={() => {
+                            if (confirm('Delete the category ' + categories.byId[id].name + '?')) removeCategory(id, parentId);
+                        }}/>
+                        <button type='button' title='create child' className={styles.buttonCreate} onClick={() => {openModal(id, false)}}/>
+                    </div>
+                }
             </div>
-        </div>
-    }
-}
+
+            {categories.byId[id].children.length && !categories.byId[id].isCollapsed ?
+                <div className={styles.list}>
+                    <CategoriesList parentId={id}
+                                    children={categories.byId[id].children}
+                                    categories={categories}
+                                    toDos={toDos}
+                                    params={params}
+                                    removeCategory={removeCategory}
+                                    collapseCategory={collapseCategory}
+                                    handleChoseNewCategory={handleChoseNewCategory}
+                                    openModal={openModal}/>
+                </div> : null}
+        </li>
+    )
+};
+
+Category.propTypes = {
+    id: PropTypes.string.isRequired,
+    parentId: PropTypes.string,
+    categories:PropTypes.object.isRequired,
+    toDos: PropTypes.object.isRequired,
+    params: PropTypes.object.isRequired,
+    removeCategory: PropTypes.func.isRequired,
+    collapseCategory: PropTypes.func.isRequired,
+    handleChoseNewCategory: PropTypes.func.isRequired,
+    openModal: PropTypes.func.isRequired
+};
 
 export default Category;

@@ -1,0 +1,26 @@
+@import 'vars';
+
+@mixin button() {
+  padding: 5px;
+  border: 1px solid $button-border-color;
+  border-radius: 0;
+  background-color: $button-bg-color;
+  color: $button-color;
+  cursor: pointer;
+  outline: none;
+
+  &:hover {
+    color: $button-color-hover;
+    border-color: $button-border-color-hover;
+  }
+}
+
+@mixin input() {
+  width: 200px;
+  padding: 5px;
+  border: 1px solid $input-border-color;
+  margin-right: 10px;
+  font-size: 12px;
+  line-height: 14px;
+  outline: none;
+}

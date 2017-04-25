@@ -1,16 +1,17 @@
-import * as React from "react";
-import * as styles from "./header.scss";
-import Search from "../search/search.jsx"
+import React, { PropTypes } from 'react';
+import { Link } from 'react-router';
+import * as styles from './header.scss';
 
-class Header extends React.Component {
-    render() {
-        return <div className={ styles.container }>
-            <div className={ styles.inner }>
-                <h1 className={ styles.title }>{this.props.title}</h1>
-                <Search/>
-            </div>
-        </div>
-    }
-}
+const Header = ({ appTitle }) => (
+    <div className={styles.container}>
+        <h1 className={styles.title}>
+            <Link to='/' className={styles.titleLink}>{appTitle}</Link>
+        </h1>
+    </div>
+);
+
+Header.propTypes = {
+    appTitle: PropTypes.string.isRequired
+};
 
 export default Header;

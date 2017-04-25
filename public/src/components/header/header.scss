@@ -1,16 +1,15 @@
-@import "../../common/variables/header";
+@import '../../common/vars';
 
 .container {
-  padding: 10px 20px;
-  background-color: $header-bg-color;
-}
-
-.inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  padding: 20px;
+  background: $header-bg-color;
 }
 
 .title {
-  color: $header-title-color;
+
+  &-link {
+    color: $header-title-color;
+    text-decoration: none;
+    cursor: pointer;
+  }
 }

@@ -5,3 +5,44 @@ $red: #a51111;
 $primary: $black;
 $secondary: $white;
 $accent: $red;
+
+$input-border-color: $primary;
+$button-border-color: $primary;
+$button-border-color-hover: $accent;
+$button-bg-color: $secondary;
+$button-color: $primary;
+$button-color-hover: $accent;
+
+$app-close-modal-color: $primary;
+
+$header-bg-color: $primary;
+$header-title-color: $secondary;
+
+$search-title-color: $secondary;
+$search-label-bg-color: $secondary;
+$search-label-bg-color-checked: $accent;
+$search-link-color: $primary;
+$search-link-color-hover: $accent;
+$search-close-button-color: $primary;
+
+$category-title-color: $primary;
+$category-title-color-active: $accent;
+
+$progress-bar-container-border-color: $primary;
+$progress-bar-indicator-bg-color: $accent;
+
+$to-do-item-label-border-color: $accent;
+$to-do-item-label-bg-color: $secondary;
+$to-do-item-label-bg-color-checked: $accent;
+$to-do-item-border-color: $primary;
+
+$to-do-details-form-border-color: $accent;
+$to-do-details-label-border-color: $accent;
+$to-do-details-label-bg-color: $secondary;
+$to-do-details-label-bg-color-checked: $accent;
+$to-do-details-message-category-name-color: $accent;
+
+$error-title-color: $accent;
+$error-content-color: $primary;
+
+$toggler-color: $primary;

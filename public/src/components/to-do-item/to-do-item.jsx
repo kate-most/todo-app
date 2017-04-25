@@ -1,15 +1,28 @@
-import * as React from "react";
-import * as styles from "./to-do-item.scss";
-import Icon from "../icon/icon.jsx";
+import React, { PropTypes } from 'react';
+import { Link } from 'react-router';
+import * as styles from './to-do-item.scss';
 
-class ToDoItem extends React.Component {
-    render() {
-        return <div className={ styles.container }>
-            <input type="checkbox" className={ styles.input }/>
-            <label className={ styles.label }>{ this.props.title }</label>
-            <Icon action="update"/>
-        </div>
-    }
-}
+const ToDoItem = ({ id, categoryId, name, isCompleted, onChange }) => (
+    <div className={ styles.container }>
+        <input id={id} type='checkbox' className={styles.input} checked={isCompleted} onChange={() => {
+            onChange(id);
+        }}/>
+        <label htmlFor={id} className={styles.label}/>
+        <label className={styles.label}>
+            {name}
+        </label>
+        <Link to={categoryId + '/' + id}>
+            <button type='button' className={styles.edit}/>
+        </Link>
+    </div>
+);
+
+ToDoItem.propTypes = {
+    id: PropTypes.string.isRequired,
+    categoryId: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    isCompleted: PropTypes.bool.isRequired,
+    onChange: PropTypes.func.isRequired
+};
 
 export default ToDoItem;

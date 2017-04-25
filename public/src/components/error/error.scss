@@ -1,0 +1,13 @@
+@import '../../common/vars';
+
+.container {
+  margin-top: 30px;
+}
+
+.title {
+  color: $error-title-color;
+}
+
+.content {
+  color: $error-content-color;
+}

@@ -20,6 +20,7 @@ module.exports = {
 
     devServer: {
         contentBase: path.resolve(__dirname, './public/src'),
+        historyApiFallback: true
     },
 
     watch: NODE_ENV === 'development',
@@ -33,54 +34,53 @@ module.exports = {
     },
 
     module: {
-      rules: [{
-          test: /\.(js|jsx)$/,
-          exclude: /node_modules/,
-          use: [{
-              loader: 'babel-loader',
-              options: { presets: ['es2015', 'react'] }
-          }],
-      },
+        rules: [{
+            test: /\.(js|jsx)$/,
+            exclude: /node_modules/,
+            use: [{
+                loader: 'babel-loader'
+            }],
+        },
 
-      {
-          test: /\.(css|scss)$/,
-          use: ExtractTextPlugin.extract({
-              fallback: 'style-loader',
-              use: [
-                  {
-                      loader: 'css-loader',
-                      query: {
-                          modules: true,
-                          camelCase: true,
-                          importLoaders: 1,
-                          sourceMap: true,
-                          localIdentName: '[name]__[local]___[hash:base64:5]'
-                      }
-                  },
-                  {
-                      loader: 'autoprefixer-loader',
-                      query: {
-                          browsers: 'last 2 version'
-                      }
-                  },
-                  {
-                      loader: 'sass-loader',
-                      query: {
-                          outputStyle: 'expanded',
-                          sourceMap: true,
-                          sourceMapContents: true
-                      }
-                  }
-              ]
-          })
-      },
-      {
-          test: /\.(jpe?g|png|svg)$/,
-          use: [
-              'file-loader?name=[path][hash:6][name].[ext]',
-          ]
-      }
-      ]
+            {
+                test: /\.(css|scss)$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: [
+                        {
+                            loader: 'css-loader',
+                            query: {
+                                modules: true,
+                                camelCase: true,
+                                importLoaders: 1,
+                                sourceMap: true,
+                                localIdentName: '[name]__[local]___[hash:base64:5]'
+                            }
+                        },
+                        {
+                            loader: 'autoprefixer-loader',
+                            query: {
+                                browsers: 'last 2 version'
+                            }
+                        },
+                        {
+                            loader: 'sass-loader',
+                            query: {
+                                outputStyle: 'expanded',
+                                sourceMap: true,
+                                sourceMapContents: true
+                            }
+                        }
+                    ]
+                })
+            },
+            {
+                test: /\.(jpe?g|png|svg)$/,
+                use: [
+                    'file-loader?name=[path][hash:6][name].[ext]',
+                ]
+            }
+        ]
     },
 
     plugins: [

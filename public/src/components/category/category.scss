@@ -1,31 +1,114 @@
-@import "../../common/variables/category";
+@import '../../common/vars';
+
 
 .container {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.inner {
+  display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 5px;
-  border: 1px solid $category-border-color;
-  border-radius: 3px;
-
-  &:not(:last-child) {
-    border-bottom: none;
-  }
+  padding: 5px 0;
 }
 
 .title {
   margin-right: 10px;
-}
 
-.actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex: 1;
+  &:first-child {
+    padding-left: 30px;
+  }
 
-  &-inner {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+  &-link {
+    color: $category-title-color;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: none;
+    }
+
+    &_active {
+      color: $category-title-color-active;
+    }
   }
 }
+
+.buttons-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button {
+  width: 20px;
+  height: 20px;
+  border: none;
+  cursor: pointer;
+  outline: none;
+
+  &_create {
+    composes: button;
+    background: url('./../../images/create.png') center no-repeat;
+    background-size: contain;
+  }
+
+  &_remove {
+    composes: button;
+    background: url('./../../images/delete.png') center no-repeat;
+    background-size: contain;
+  }
+
+  &_move {
+    composes: button;
+    background: url('./../../images/move.png') center no-repeat;
+    background-size: contain;
+  }
+
+  &_edit {
+    composes: button;
+    background: url('./../../images/update.png') center no-repeat;
+    background-size: contain;
+  }
+}
+
+//.input {
+//  display: none;
+//
+//  &-wrap {
+//    display: flex;
+//  }
+//}
+
+//.checkbox {
+//  display: none;
+//
+//  &:checked {
+//    & + .label {
+//      & + .input {
+//        display: block;
+//      }
+//    }
+//  }
+//}
+
+//.label {
+//  width: 20px;
+//  height: 20px;
+//  border: none;
+//  cursor: pointer;
+//
+//  &_editing {
+//    composes: label;
+//
+//    background-size: contain;
+//  }
+//}
+
+.list {
+  padding-left: 20px;
+}
+
+
