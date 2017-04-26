@@ -32,7 +32,10 @@ const Search = ({ categoryId, searchParams, handleChangeSearchName, handleChange
 
 Search.propTypes = {
     categoryId: PropTypes.string.isRequired,
-    searchParams: PropTypes.object.isRequired,
+    searchParams: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        onlyCompleted: PropTypes.bool.isRequired
+    }).isRequired,
     handleChangeSearchName: PropTypes.func.isRequired,
     handleChangeSearchStatus: PropTypes.func.isRequired,
     clearSearchName: PropTypes.func.isRequired

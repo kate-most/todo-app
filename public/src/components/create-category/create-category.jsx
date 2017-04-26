@@ -35,7 +35,7 @@ class CreateCategory extends PureComponent {
 
 CreateCategory.propTypes = {
     defaultValue: PropTypes.string,
-    id: PropTypes.number,
+    id: PropTypes.string,
     parentId: PropTypes.string,
     onChange: PropTypes.func,
     editCategory: PropTypes.func,
