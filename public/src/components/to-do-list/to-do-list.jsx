@@ -1,62 +1,74 @@
-import React, { PureComponent } from 'react';
-import ToDoItem from './../to-do-item/to-do-item.jsx';
-import CreateTodo from './../create-todo/create-todo.jsx';
-import Search from './../search/search.jsx'
+import React, { PropTypes } from 'react';
+import TodoItem from './../to-do-item/to-do-item.jsx';
 import * as styles from './to-do-list.scss';
 
-class ToDoList extends PureComponent {
-    render() {
-        const category = this.props.categories.byId[this.props.params.category];
+const TodoList = ({ params, categories, todos, handleTodoStatusChange, handleCategoryStatusChange }) => {
+    const category = categories.byId[params.category];
 
-        if (!category) {
-            return <h1>There is no category with this id</h1>;
-        }
+    return (
+        <section className={styles.container}>
+            {category ?
+            <div>
+                {todos.ids.length ?
+                    <ul className={styles.list}>
+                        {
+                            todos.ids.map((id) => {
+                                return (
+                                    <TodoItem key={id}
+                                              id={id}
+                                              todos={todos}
+                                              categoryId={params.category}
+                                              handleTodoStatusChange={handleTodoStatusChange}
+                                              handleCategoryStatusChange={handleCategoryStatusChange}/>
+                                )
+                            })
+                        }
+                    </ul> :
+                    <h3>There are no tasks</h3>
+                }
+            </div> :
+            <h1>There is no category with this id</h1>}
+        </section>
+    )
+};
 
-        return (
-            <section className={styles.container}>
-                {category && <div>
-                    <Search categoryId={this.props.params.category}
-                            searchParams={this.props.searchParams}
-                            handleChangeSearchName={this.props.handleChangeSearchName}
-                            handleChangeSearchStatus={this.props.handleChangeSearchStatus}
-                            clearSearchName={this.props.clearSearchName}/>
-                    <CreateTodo categoryId={this.props.params.category}
-                                addToDo={this.props.addToDo}/>
+TodoList.propTypes = {
+    params: PropTypes.shape({
+        category: PropTypes.string.isRequired
+    }),
+    categories: PropTypes.shape({
+        ids: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+        byId: PropTypes.objectOf(PropTypes.shape({
+            name: PropTypes.string.isRequired,
+            id: PropTypes.string.isRequired,
+            parentId: PropTypes.string,
+            children: PropTypes.arrayOf(PropTypes.string).isRequired,
+            isCompleted: PropTypes.bool.isRequired,
+            isCollapsed: PropTypes.bool.isRequired,
+            todos: PropTypes.array.isRequired
+        }).isRequired).isRequired,
+        ui: PropTypes.shape({
+            editing: PropTypes.bool,
+            modalIsOpen: PropTypes.bool,
+            currentCategoryId: PropTypes.string,
+            error: PropTypes.string
+        })
+    }).isRequired,
+    todos: PropTypes.shape({
+        ids: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+        byId: PropTypes.objectOf(PropTypes.shape({
+            name: PropTypes.string.isRequired,
+            category: PropTypes.string.isRequired,
+            details: PropTypes.string.isRequired,
+            isCompleted: PropTypes.bool.isRequired
+        }).isRequired).isRequired,
+        ui: PropTypes.shape({
+            error: PropTypes.string,
+            newCategory: PropTypes.string
+        })
+    }).isRequired,
+    handleTodoStatusChange: PropTypes.func.isRequired,
+    handleCategoryStatusChange: PropTypes.func.isRequired
+};
 
-                    {category.toDos.length ?
-                        <ul className={styles.list}>
-                            {category.toDos.filter((id) => {
-                                if (this.props.location.query.name && this.props.location.query.completed === 'true') {
-                                    return ((this.props.toDos.byId[id].name.search(this.props.location.query.name) >= 0) && this.props.toDos.byId[id].isCompleted);
-                                } else if (this.props.location.query.name) {
-                                    return (this.props.toDos.byId[id].name.search(this.props.location.query.name) >= 0);
-                                } else if (this.props.location.query.completed === 'true') {
-                                    return this.props.toDos.byId[id].isCompleted;
-                                } else {
-                                    return this.props.toDos.byId[id];
-                                }
-                            }).map((id) => (
-                                <ToDoItem key={id}
-                                          id={id}
-                                          categoryId={this.props.params.category}
-                                          name={this.props.toDos.byId[id].name}
-                                          isCompleted={this.props.toDos.byId[id].isCompleted}
-                                          onChange={this.props.onStatusChange}/>
-                            ))}
-                        </ul> :
-                        <h3>There are no tasks</h3>
-                    }
-                    {React.Children.map(this.props.children, child => React.cloneElement(child, {
-                        categories: this.props.categories,
-                        toDos: this.props.toDos,
-                        editToDo: this.props.editToDo,
-                        handleChoseNewCategory: this.props.handleChoseNewCategory,
-                        chosenNewCategory: this.props.chosenNewCategory
-                    }))}
-                </div>}
-            </section>
-        )
-    }
-}
-
-export default ToDoList;
+export default TodoList;

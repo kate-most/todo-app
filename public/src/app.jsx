@@ -1,500 +1,119 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, browserHistory, Redirect} from 'react-router';
+import { Router, Route, browserHistory } from 'react-router';
+import { createStore, applyMiddleware, bindActionCreators } from 'redux';
+import logger from 'redux-logger';
+import { Provider, connect } from 'react-redux';
+import reducer from './reducers/index.js';
+import { omit, throttle } from 'lodash';
+import { closeModal, handleChooseNewCategory, handleTodoErrors, handleCategoryErrors, handleRouteChange } from './action-creators/index.js';
 import Modal from 'react-modal';
+import Categories from './containers/categories/categories.jsx';
+import CreateCategory from './containers/create-category/create-category.jsx';
+import Todos from './containers/todos/todos.jsx';
+import EditTodo from './containers/edit-todo/edit-todo.jsx'
 import Header from './components/header/header.jsx';
-import ProgressBar from './components/progress-bar/progress-bar.jsx';
-import CreateCategory from './components/create-category/create-category.jsx';
-import CategoriesList from './components/categories-list/categories-list.jsx';
+import ProgressBar from './containers/progress-bar/progress-bar.jsx';
 import Error from './components/error/error.jsx';
-import ToDoList from './components/to-do-list/to-do-list.jsx';
-import ToDoDetails from './components/to-do-details/to-do-details.jsx'
-import { omit, without, find } from 'lodash';
-import uuidv4 from 'uuid/v4';
 import * as styles from './app.scss';
 
-const items = JSON.parse(localStorage.getItem('items')) || {
+let App = ({ params, children, categories, todos, progress, closeModal, handleRouteChange }) => (
+    <div className={styles.wrapper}>
+        {browserHistory.listen(throttle(handleRouteChange, 2000))}
+
+        <Header/>
+        <ProgressBar/>
+
+        <section className={styles.content}>
+            <CreateCategory/>
+            <Categories params={params}/>
+            {categories.ui && categories.ui.error && <Error error={categories.ui.error}/>}
+            {todos.ui && todos.ui.error && <Error error={todos.ui.error}/>}
+        </section>
+
+        {categories.ui ?
+            <Modal isOpen={categories.ui.modalIsOpen} contentLabel='Category name'>
+                {categories.ui.editing ?
+                    <CreateCategory defaultValue={categories.byId[categories.ui.currentCategoryId].name}/> :
+                    <CreateCategory parentId={categories.ui.currentCategoryId}/>}
+                <button className={styles.closeModal} onClick={() => closeModal()}/>
+
+                {categories.ui.error && <Error error={categories.ui.error}/>}
+            </Modal> :
+            null
+        }
+        {children}
+    </div>
+);
+
+const initialState = JSON.parse(localStorage.getItem('items')) || {
         categories: {
             ids: [],
-            byId: {}
+            byId: {},
+            ui: {
+                modalIsOpen: false,
+                currentCategoryId: null,
+                editing: false,
+                error: null
+            }
         },
-        toDos: {
+        todos: {
             ids: [],
-            byId: {}
+            byId: {},
+            ui: {
+                error: null,
+                newCategory: ''
+            }
         },
-        searchParams: {
+        search: {
             name: '',
             onlyCompleted: false
-        },
-        appTitle: 'To-Do List',
-        toDo: '',
-        error: null,
-        modalIsOpen: false,
-        currentId: '',
-        editing: false,
-        progress: 100
-    };
-
-class App extends PureComponent {
-    static getDeepChildren = (categories, id) => {
-        const deepChildren = [id];
-
-        if (!categories.byId[id].children || !categories.byId[id].children.length) {
-            return deepChildren;
-        }
-
-        function getChildren(subitem) {
-            if (!subitem) {
-                return;
-            }
-
-            deepChildren.push(...subitem.children);
-
-            subitem.children.forEach(childId => {
-                if (categories.byId[childId]) {
-                    getChildren(categories.byId[childId]);
-                }
-            });
-        }
-
-        getChildren(categories.byId[id]);
-
-        return deepChildren;
-    };
-
-    constructor() {
-        super();
-
-        this.state = items;
-    }
-
-    openModal = (currentId, editingState) => {
-        this.setState({
-            modalIsOpen: true,
-            currentId: currentId,
-            error: '',
-            editing: editingState
-        });
-    };
-
-    closeModal = () => {
-        this.setState({
-            modalIsOpen: false,
-            currentId: '',
-            error: ''
-        });
-    };
-
-    checkCategoryName = (value, parentId) => {
-        let isNameAllowed = null;
-
-        if (parentId) {
-            const arrayOfChildIds = this.state.categories.byId[parentId].children;
-
-            let childCategories = {};
-
-            arrayOfChildIds.forEach((id) => {
-                childCategories[id] = this.state.categories.byId[id];
-            });
-            isNameAllowed = value && !find(childCategories, { name: value });
-        } else {
-            let topLevelCategories = {};
-
-            this.state.categories.ids.forEach((id) => {
-                if (!this.state.categories.byId[id].parentId) {
-                    topLevelCategories[id] = this.state.categories.byId[id];
-                }
-            });
-
-            isNameAllowed = value && !find(topLevelCategories, { name: value });
-        }
-
-        return isNameAllowed;
-    };
-
-    addCategory = (value, parentId = null) => {
-
-        if (this.checkCategoryName(value, parentId)) {
-            const id = uuidv4();
-
-            this.setState({
-                categories: {
-                    ...this.state.categories,
-                    ids: [id, ...this.state.categories.ids],
-                    byId: {
-                        [id]: {
-                            name: value,
-                            id,
-                            parentId,
-                            children: [],
-                            toDos: [],
-                            isComplete: true,
-                            isCollapsed: true
-                        },
-                        ...this.state.categories.byId,
-                        ...parentId && {
-                            [parentId]: {
-                                ...this.state.categories.byId[parentId],
-                                children: [id, ...this.state.categories.byId[parentId].children]
-                            }
-                        }
-                    },
-                },
-                error: null,
-                childCategoryCreation: false,
-                modalIsOpen: false,
-                currentId: ''
-            }, () => {
-                this.updateLocalStorage(this.state);
-                this.updateProgress();
-            });
-        } else {
-            this.handleErrors('category', value);
         }
     };
 
-    editCategory = (id, value) => {
+const store = createStore(reducer, initialState, applyMiddleware(logger));
 
-        if (this.checkCategoryName(value)) {
-            this.setState({
-                categories: {
-                    ...this.state.categories,
-                    byId: {
-                        ...this.state.categories.byId,
-                        [id]: {
-                            ...this.state.categories.byId[id],
-                            name: value
-                        }
-                    }
-                },
-                error: null,
-                modalIsOpen: false,
-                editing: false
-            }, () => {
-                this.updateLocalStorage(this.state);
-            });
-        } else {
-            this.handleErrors('category', value, id);
-        }
-    };
+const mapStateToProps = state => ({
+    categories: state.categories,
+    todos: state.todos,
+    search: state.search
+});
 
-    removeCategory = (id, parentId = null) => {
-        const removeIds = App.getDeepChildren(this.state.categories, id);
+const mapDispatchToProps = dispatch => bindActionCreators({
+    closeModal,
+    handleChooseNewCategory,
+    handleTodoErrors,
+    handleCategoryErrors,
+    handleRouteChange
+}, dispatch);
 
-        this.setState({
-            categories: {
-                ...this.state.categories,
-                ids: without(this.state.categories.ids, ...removeIds),
-                byId: omit({
-                    ...this.state.categories.byId,
-                    ...parentId && {
-                        [parentId]: {
-                            ...this.state.categories.byId[parentId],
-                            children: without(this.state.categories.byId[parentId].children, id)
-                        }
-                    }
-                }, ...removeIds)
-            }
-        }, () => {
-            this.updateLocalStorage(this.state);
-            this.updateProgress();
-        });
-    };
+App = connect(mapStateToProps, mapDispatchToProps)(App);
 
-    collapseCategory = (id) => {
-        this.setState(prevState => ({
-            categories: {
-                ...this.state.categories,
-                byId: {
-                    ...this.state.categories.byId,
-                    [id]: {
-                        ...this.state.categories.byId[id],
-                        isCollapsed: !prevState.categories.byId[id].isCollapsed
-                    }
-                },
-            }
-        }));
-    };
 
-    addToDo = (categoryId, toDoName) => {
-        if (categoryId && toDoName) {
-            const toDoId = uuidv4();
+const updateLocalStorage = () => {
+    let state = store.getState();
 
-            this.setState({
-                categories: {
-                    ...this.state.categories,
-                    byId: {
-                        ...this.state.categories.byId,
-                        [categoryId]: {
-                            ...this.state.categories.byId[categoryId],
-                            toDos: this.state.categories.byId[categoryId].toDos ? [toDoId, ...this.state.categories.byId[categoryId].toDos] : [toDoId]
-                        }
-                    },
-                },
-                toDos: {
-                    ...this.state.toDos,
-                    ids: [...this.state.toDos.ids, toDoId],
-                    byId: {
-                        ...this.state.toDos.byId,
-                        [toDoId]: {
-                            name: toDoName,
-                            category: categoryId,
-                            details: 'This is a new category',
-                            isCompleted: false
-                        }
-                    },
-                },
-                error: ''
+    const data = Object.keys(state).reduce((result, key) => {
+        result[key] = omit(state[key], ['ui']);
 
-            }, () => {
-                this.updateLocalStorage(this.state);
-                this.handleCompleteness(categoryId);
-            })
-        } else {
-            this.handleErrors('todo');
-        }
+        return result;
+    }, {});
 
-    };
+    localStorage.setItem('items', JSON.stringify(data));
+};
 
-    editToDo = (id, newValue, completeStatus, newDetails) => {
-
-        this.setState({
-            categories: this.state.chosenNewCategory ? {
-                ...this.state.categories,
-                byId: {
-                    ...this.state.categories.byId,
-                    [this.state.toDos.byId[id].category]: {
-                        ...this.state.categories.byId[this.state.toDos.byId[id].category],
-                        toDos: without(this.state.categories.byId[this.state.toDos.byId[id].category], id)
-                    },
-                    [this.state.chosenNewCategory]: {
-                        ...this.state.categories.byId[this.state.chosenNewCategory],
-                        toDos: this.state.categories.byId[this.state.chosenNewCategory].toDos ? [...this.state.categories.byId[this.state.chosenNewCategory].toDos, id] : [id]
-                    }
-                },
-            } : {
-                ...this.state.categories
-            },
-            toDos: {
-                ...this.state.toDos,
-                byId: {
-                    ...this.state.toDos.byId,
-                    [id]: {
-                        ...this.state.toDos.byId[id],
-                        name: newValue,
-                        category: this.state.chosenNewCategory ? this.state.chosenNewCategory : this.state.toDos.byId[id].category,
-                        details: newDetails,
-                        isCompleted: completeStatus
-                    }
-                }
-            },
-            chosenNewCategory: ''
-        }, () => {
-            this.updateLocalStorage(this.state);
-            this.handleCompleteness(this.state.toDos.byId[id].category);
-        });
-    };
-
-    updateProgress = () => {
-
-        this.setState({
-            progress: this.state.categories.ids.length ? (this.getNumberOfCompletedCategories() * 100 / this.state.categories.ids.length) : 100
-        }, () => {
-            this.updateLocalStorage(this.state);
-        });
-    };
-
-    getNumberOfCompletedCategories = () => {
-        let number = 0;
-
-        this.state.categories.ids.forEach((id) => {
-            if (this.state.categories.byId[id].isComplete)
-            number++;
-        });
-
-        return number;
-    };
-
-    handleErrors = (type, value, id) => {
-        let errorMessage;
-
-        if (type === 'category') {
-            errorMessage = !value ? 'This is an empty category name!' : (id && (value === this.state.categories.byId[id].name)) ? 'You have the same name' : 'This category already exists!';
-        } else if (type === 'todo') {
-            errorMessage = (!this.state.toDo) ? 'This is an empty to-do name!' : 'You are trying to create a to-do without category!';
-        } else {
-            errorMessage = 'Unknown error';
-        }
-
-        this.setState({
-            error: errorMessage
-        })
-    };
-
-    handleChangeCategoryName = () => {
-        this.setState({
-            error: null
-        });
-    };
-
-    handleChangeToDoItemStatus = (id) => {
-        this.setState(prevState => ({
-            toDos: {
-                ...this.state.toDos,
-                byId: {
-                    ...this.state.toDos.byId,
-                    [id]: {
-                        ...this.state.toDos.byId[id],
-                        isCompleted: !prevState.toDos.byId[id].isCompleted
-                    }
-                }
-            }
-        }), () => {
-            this.updateLocalStorage(this.state);
-            this.handleCompleteness(this.state.toDos.byId[id].category);
-        });
-    };
-
-    handleCompleteness = (categoryId) => { //defines whether operations with a task change category completeness status
-        const startingCompletenessStatus = this.state.categories.byId[categoryId].isComplete;
-        const categoryToDosIds = this.state.categories.byId[categoryId].toDos;
-        let categoryToDos = {};
-
-        categoryToDosIds.forEach((id) => {
-            categoryToDos[id] = this.state.toDos.byId[id];
-        });
-
-        const isCompletedCategory = !find(categoryToDos, {isCompleted: false});
-
-        if (startingCompletenessStatus !== isCompletedCategory) {
-
-            this.setState({
-                categories: {
-                    ...this.state.categories,
-                    byId: {
-                        ...this.state.categories.byId,
-                        [categoryId]: {
-                            ...this.state.categories.byId[categoryId],
-                            isComplete: isCompletedCategory
-                        }
-                    },
-                }
-            }, () => {
-                this.updateLocalStorage(this.state);
-                this.updateProgress();
-            });
-        }
-    };
-
-    handleChoseNewCategory = (newCategory) => {
-        this.setState({
-            chosenNewCategory: newCategory
-        });
-    };
-
-    handleChangeSearchName = (event) => {
-        this.setState({
-            searchParams: {
-                ...this.state.searchParams,
-                name: event.target.value
-            }
-        }, () => {
-            this.updateLocalStorage(this.state);
-        });
-    };
-
-    handleChangeSearchStatus = () => {
-        this.setState(prevState => ({
-            searchParams: {
-                ...this.state.searchParams,
-                onlyCompleted: !prevState.searchParams.onlyCompleted
-            }
-        }), () => {
-            this.updateLocalStorage(this.state);
-        })
-    };
-
-    clearSearchName = () => {
-        this.setState({
-            searchParams: {
-                ...this.state.searchParams,
-                name: ''
-            }
-        }, () => {
-            this.updateLocalStorage(this.state);
-        });
-    };
-
-    updateLocalStorage = state => {
-        localStorage.setItem('items', JSON.stringify(state));
-    };
-
-    render() {
-
-        return (
-            <div className={styles.wrapper}>
-                <Header appTitle={this.state.appTitle}/>
-                <ProgressBar progress={this.state.progress}/>
-
-                <section className={styles.content}>
-                    <CreateCategory onChange={this.handleChangeCategoryName}
-                                    addCategory={this.addCategory}/>
-                    <CategoriesList categories={this.state.categories}
-                                    toDos={this.state.toDos}
-                                    params={this.props.params}
-                                    removeCategory={this.removeCategory}
-                                    collapseCategory={this.collapseCategory}
-                                    handleChoseNewCategory={this.handleChoseNewCategory}
-                                    openModal={this.openModal}/>
-                    {this.state.error && <Error error={this.state.error}/>}
-                </section>
-
-                <Modal
-                    isOpen={ this.state.modalIsOpen }
-                    onRequestClose={this.closeModal}
-                    contentLabel='Category name'>
-                    {
-                        this.state.editing ?
-                            <CreateCategory defaultValue={this.state.categories.byId[this.state.currentId] ? this.state.categories.byId[this.state.currentId].name : ''}
-                                            id={this.state.currentId}
-                                            editCategory={this.editCategory}/> :
-                            <CreateCategory parentId={this.state.currentId}
-                                            onChange={this.handleChangeCategoryName}
-                                            addCategory={this.addCategory}/>
-                    }
-                    <button className={styles.closeModal} onClick={() => {this.closeModal()}}/>
-                    {this.state.error && <Error error={this.state.error}/>}
-                </Modal>
-
-                {React.Children.map(this.props.children, child => React.cloneElement(child, {
-                    categories: this.state.categories,
-                    toDos: this.state.toDos,
-                    addToDo: this.addToDo,
-                    onStatusChange: this.handleChangeToDoItemStatus,
-                    toDo: this.state.toDo,
-                    editToDo: this.editToDo,
-                    startEditToDo: this.startEditToDo,
-                    handleChoseNewCategory: this.handleChoseNewCategory,
-                    chosenNewCategory: this.state.chosenNewCategory,
-                    handleChangeSearchName: this.handleChangeSearchName,
-                    handleChangeSearchStatus: this.handleChangeSearchStatus,
-                    searchParams: this.state.searchParams,
-                    clearSearchName: this.clearSearchName
-                }))}
-            </div>
-        )
-    }
-}
+store.subscribe(updateLocalStorage);
+updateLocalStorage();
 
 render(
-    <Router history={browserHistory}>
-        <Route path='/' component={App}>
-            <Route path=':category' component={ToDoList}>
-                <Route path=':todo' component={ToDoDetails}/>
-                <Redirect from='*' to=':category' />
+    <Provider store={store} >
+        <Router history={browserHistory}>
+            <Route path='/' component={App}>
+                <Route path=':category' component={Todos}/>
+                <Route path=':category/:todo' component={EditTodo}/>
+                <Route path='*' component={Error}/>
             </Route>
-            <Route path='*' component={Error}/>
-        </Route>
-    </Router>,
+        </Router>
+    </Provider>,
     document.getElementById('react-root')
 );

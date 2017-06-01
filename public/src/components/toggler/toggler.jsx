@@ -1,14 +1,14 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import * as styles from './toggler.scss';
 
-const Toggler = ({ isCollapsed, collapseCategory, id }) => {
+const Toggler = ({ id, isCollapsed, toggleCategory}) => {
     const className = (isCollapsed) ? styles.iconOpened : styles.iconClosed;
     const title = isCollapsed ? 'ellapse' : 'collapse';
 
     return (
         <button className={styles.item}
                 title={title}
-                onClick={() => {collapseCategory(id)}}>
+                onClick={() => {toggleCategory(id)}}>
             <div className={className}/>
         </button>
     )
@@ -16,7 +16,7 @@ const Toggler = ({ isCollapsed, collapseCategory, id }) => {
 
 Toggler.propTypes = {
     isCollapsed: PropTypes.bool.isRequired,
-    collapseCategory: PropTypes.func.isRequired,
+    toggleCategory: PropTypes.func.isRequired,
     id: PropTypes.string.isRequired
 };
 
