@@ -1,26 +1,23 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { addTodo, handleTodoErrors, clearError } from '../../action-creators/index.js';
+import { addTodo, handleTodoErrors } from '../../action-creators/todos';
+import { clearError } from '../../action-creators/common';
 import * as styles from './create-todo.scss';
 
-let CreateTodo = ({ params, addTodo, handleTodoErrors, clearError }) => {
+export const CreateTodo = ({ params, addTodo, handleTodoErrors, clearError }) => {
     let textInput;
-
-    const checkTodoName = (value) => {
-        if (value) {
-            addTodo(value, params.category);
-        } else {
-            handleTodoErrors('This is an empty todo name!');
-        }
-    };
 
     return (
         <form className={styles.form}
               onSubmit={event => {
                   event.preventDefault();
 
-                  checkTodoName(textInput.value);
+                  if (textInput && textInput.value) {
+                      addTodo(textInput.value, params.category);
+                  } else {
+                      handleTodoErrors('This is an empty todo name!');
+                  }
 
                   textInput.value = '';
               }}>

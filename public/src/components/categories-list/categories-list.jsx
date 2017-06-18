@@ -1,6 +1,7 @@
-import React, { PropTypes } from 'react'
-import Category from './../category/category.jsx'
-import * as styles from './categories-list.scss'
+import React from 'react';
+import PropTypes from 'prop-types';
+import Category from './../category/category';
+import * as styles from './categories-list.scss';
 
 const CategoriesList = ({ params, categories, todos, children, toggleCategory, removeCategory, openModal, handleChooseNewCategory }) => {
     const searchIds = children ? children : categories.ids.filter((id) => (!categories.byId[id].parentId));

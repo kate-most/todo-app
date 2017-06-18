@@ -1,6 +1,18 @@
-import { omit, without, find } from 'lodash';
+import { omit, without } from 'lodash';
+import { defineCurrentCategoryStatus, defineNewCategoryStatus } from '../helpers/define-category-status';
+import getDeepChildren from '../helpers/get-deep-children';
 
-const categories = (state = {}, action) => {
+const categories = (state = {
+    ids: [],
+    byId: {},
+    ui: {
+        modalIsOpen: false,
+        currentCategoryId: null,
+        editing: false,
+        error: null,
+        newCategory: ''
+    }
+}, action) => {
 
     switch (action.type) {
         case 'ADD_CATEGORY':
@@ -51,18 +63,22 @@ const categories = (state = {}, action) => {
                 }
             };
         case 'REMOVE_CATEGORY':
+            const currentCategory = action.categories.byId[action.id];
+            const parentId = currentCategory.parentId;
+            const removeIds = getDeepChildren(action.categories, action.id, currentCategory);
+
             return {
                 ...state,
-                ids: without(state.ids, ...action.removeIds),
+                ids: without(state.ids, ...removeIds),
                 byId: omit({
                     ...state.byId,
-                    ...action.parentId && {
-                        [action.parentId]: {
-                            ...state.byId[action.parentId],
-                            children: without(state.byId[action.parentId].children, action.id)
+                    ...parentId && {
+                        [parentId]: {
+                            ...state.byId[parentId],
+                            children: without(state.byId[parentId].children, action.id)
                         }
                     }
-                }, ...action.removeIds),
+                }, ...removeIds),
                 ui: {
                     ...state.ui,
                     error: null,
@@ -81,52 +97,18 @@ const categories = (state = {}, action) => {
                 }
             };
         case 'CHANGE_CATEGORY_STATUS':
-            const getNumberOfCompletedTodos = (categoryTodosIds) => {
-                let numberOfCompletedTodos = 0;
-
-                categoryTodosIds.forEach((id) => {
-                    if (action.todos.byId[id].isCompleted) {
-                        ++numberOfCompletedTodos;
-                    }
-                });
-
-                return numberOfCompletedTodos;
-            };
-
-            const defineCurrentCategoryStatus = () => {
-                const categoryTodosIds = state.byId[action.categoryId].todos;
-                const categoryTodosLength = categoryTodosIds.length;
-
-                if (action.editing) {
-                    return categoryTodosLength ? (
-                        ((getNumberOfCompletedTodos(categoryTodosIds) === categoryTodosLength) && action.newStatus) ||
-                        ((getNumberOfCompletedTodos(categoryTodosIds) === categoryTodosLength - 1) && action.newStatus && !action.todos.byId[action.targetTodoId].isCompleted)
-                    ) : true;
-                } else {
-                    return ((getNumberOfCompletedTodos(categoryTodosIds) === categoryTodosLength - 1) && !action.todos.byId[action.targetTodoId].isCompleted);
-                }
-            };
-
-            const defineNewCategoryStatus = () => {
-                const categoryTodosIds = state.byId[action.todos.ui.newCategory].todos;
-                const categoryTodosLength = categoryTodosIds.length;
-                const todoStatus = action.newStatus;
-
-                return categoryTodosLength ? ((state.byId[action.todos.ui.newCategory].isCompleted === true) && todoStatus) : todoStatus;
-            };
-
             return {
                 ...state,
                 byId: {
                     ...state.byId,
                     [action.categoryId]: {
                         ...state.byId[action.categoryId],
-                        isCompleted: defineCurrentCategoryStatus()
+                        isCompleted: defineCurrentCategoryStatus(action, state)
                     },
                     ...action.todos.ui.newCategory && {
                         [action.todos.ui.newCategory]: {
                             ...state.byId[action.todos.ui.newCategory],
-                            isCompleted: defineNewCategoryStatus()
+                            isCompleted: defineNewCategoryStatus(action, state)
                         }
                     }
                 },
@@ -184,8 +166,8 @@ const categories = (state = {}, action) => {
                     {
                         ...state.byId,
                         [action.oldCategory]: {
-                            ...state.byId[action.oldCategory],
-                            todos: without(state.byId[action.oldCategory].todos, action.id)
+                            ...state.byId[action.editedTodo.category],
+                            todos: without(state.byId[action.editedTodo.category].todos, action.id)
                         },
                         [state.ui.newCategory]: {
                             ...state.byId[state.ui.newCategory],
@@ -193,7 +175,11 @@ const categories = (state = {}, action) => {
                         }
                     } : {
                         ...state.byId
-                    }
+                    },
+                ui: {
+                    ...state.ui,
+                    newCategory: ''
+                }
             };
         case 'CHOOSE_NEW_CATEGORY':
             return {

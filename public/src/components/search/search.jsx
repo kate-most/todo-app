@@ -1,4 +1,5 @@
-import React, {PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import * as styles from './search.scss';
 
@@ -18,8 +19,8 @@ const Search = ({ params, searchParams, changeSearchName, changeSearchStatus, cl
                        onChange={() => {
                            changeSearchStatus();
                            clearError();
-                       }}/>
-                <label htmlFor='show-done' className={styles.checkboxLabel}/>
+                       }} />
+                <label htmlFor='show-done' className={styles.checkboxLabel} />
                 <div className={styles.checkboxTitle}>Show done</div>
             </div>
 
@@ -31,11 +32,11 @@ const Search = ({ params, searchParams, changeSearchName, changeSearchStatus, cl
                        onChange={(event) => {
                            changeSearchName(event.target.value);
                            clearError();
-                       }}/>
+                       }} />
                 <button type='button' className={styles.inputClose} onClick={() => {
                     clearSearchName();
                     clearError();
-                }}/>
+                }} />
             </div>
             <button type='button' className={styles.button}>
                 <Link className={styles.buttonLink} to={categoryId + '?name=' + searchParams.name + '&completed=' + searchParams.onlyCompleted}>Search</Link>
@@ -54,7 +55,8 @@ Search.propTypes = {
     }),
     changeSearchName: PropTypes.func.isRequired,
     changeSearchStatus: PropTypes.func.isRequired,
-    clearSearchName: PropTypes.func.isRequired
+    clearSearchName: PropTypes.func.isRequired,
+    clearError: PropTypes.func.isRequired
 };
 
 export default Search;

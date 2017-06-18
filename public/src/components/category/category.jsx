@@ -1,55 +1,13 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import Toggler from './../toggler/toggler.jsx';
-import CategoriesList from './../categories-list/categories-list.jsx';
+import Toggler from './../toggler/toggler';
+import CategoriesList from './../categories-list/categories-list';
 import * as styles from './category.scss';
 
 const Category = ({ params, id, categories, todos, toggleCategory, removeCategory, openModal, handleChooseNewCategory }) => {
     const currentCategory = categories.byId[id];
     const isTodoEditing = params.todo && todos.byId[params.todo];
-    let removeIds;
-    let removeTodos;
-
-    const getIds = () => {
-        removeIds = getDeepChildren(categories, id);
-        removeTodos = getAllTodos(removeIds);
-    };
-
-    const getDeepChildren = (categories, id) => {
-        const deepChildren = [id];
-
-        if (!currentCategory.children || !currentCategory.children.length) {
-            return deepChildren;
-        }
-
-        function getChildren(subItem) {
-            if (!subItem) {
-                return;
-            }
-
-            deepChildren.push(...subItem.children);
-
-            subItem.children.forEach(childId => {
-                if (categories.byId[childId]) {
-                    getChildren(categories.byId[childId]);
-                }
-            });
-        }
-
-        getChildren(currentCategory);
-
-        return deepChildren;
-    };
-
-    const getAllTodos = (deepChildren) => {
-        let todos = [];
-
-        deepChildren.forEach((id) => {
-            todos.push(...categories.byId[id].todos);
-        });
-
-        return todos;
-    };
 
     return (
         <li className={styles.container}>
@@ -72,11 +30,10 @@ const Category = ({ params, id, categories, todos, toggleCategory, removeCategor
                             <button type='button' title='edit' className={styles.buttonEdit} onClick={() => {openModal(id, true)}}/>
                             <button type='button' title='remove' className={styles.buttonRemove} onClick={() => {
                                 if (confirm('Delete the category ' + currentCategory.name + '?')) {
-                                    getIds();
-                                    removeCategory(id, currentCategory.parentId, removeIds, removeTodos);
+                                    removeCategory(id, categories);
                                 }
                             }}/>
-                            <button type='button' title='create child' className={styles.buttonCreate} onClick={() => {openModal(id, false)}}/>
+                            <button type='button' title='create child' className={styles.buttonCreate} onClick={() => {openModal(id)}}/>
                         </div>
                 }
             </div>

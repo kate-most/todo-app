@@ -1,8 +1,10 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { editTodo, handleCategoryStatusChange, handleChooseNewCategory, handleTodoErrors, clearError } from '../../action-creators/index.js';
-import TodoDetails from './../../components/to-do-details/to-do-details.jsx';
+import { editTodo, handleTodoErrors } from '../../action-creators/todos';
+import { handleCategoryStatusChange, handleChooseNewCategory } from '../../action-creators/categories';
+import { clearError } from '../../action-creators/common';
+import TodoDetails from './../../components/to-do-details/to-do-details';
 
 const EditTodo = ({ params, todos, categories, editTodo, handleChooseNewCategory, handleCategoryStatusChange,handleTodoErrors, clearError, handleCategoryCompleteness }) => (
     <TodoDetails params={params}

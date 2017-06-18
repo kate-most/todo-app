@@ -28,6 +28,7 @@ module.exports = {
     devtool: NODE_ENV === 'development' ? 'source-map' : null,
 
     resolve: {
+        extensions: ['.js', '.jsx'],
         alias: {
             normalize: path.resolve(__dirname, './node_modules/normalize.scss/normalize.scss')
         }

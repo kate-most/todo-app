@@ -17,15 +17,18 @@
   border: 1px solid $toggler-color;
   transform: rotate(45deg);
 
-  &_opened {
-    composes: icon;
-    border-right: none;
-    border-bottom: none;
-  }
-
-  &_closed {
+  &-opened {
     composes: icon;
     border-top: none;
     border-left: none;
   }
+
+  &-closed {
+    composes: icon;
+    border-right: none;
+    border-bottom: none;
+  }
 }
+
+
+

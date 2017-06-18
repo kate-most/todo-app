@@ -1,6 +1,15 @@
 import { omit, without } from 'lodash';
+import getDeepChildren from '../helpers/get-deep-children';
+import getAllTodos from '../helpers/get-all-todos'
 
-const todos = (state = {}, action) => {
+const todos = (state = {
+    ids: [],
+    byId: {},
+    ui: {
+        error: null,
+        newCategory: ''
+    }
+}, action) => {
     switch (action.type) {
         case 'ADD_TODO':
             return {
@@ -53,12 +62,14 @@ const todos = (state = {}, action) => {
                 }
             };
         case 'REMOVE_CATEGORY':
+            const removeTodos = getAllTodos(getDeepChildren(action.categories, action.id, action.categories.byId[action.id]), action.categories);
+
             return {
                 ...state,
-                ids: without(state.ids, ...action.removeTodos),
+                ids: without(state.ids, ...removeTodos),
                 byId: omit({
                     ...state.byId,
-                }, action.removeTodos),
+                }, removeTodos),
                 ui: {
                     ...state.ui,
                     error: null
@@ -71,10 +82,10 @@ const todos = (state = {}, action) => {
                     ...state.byId,
                     [action.id]: {
                         ...state.byId[action.id],
-                        name: action.name,
+                        name: action.editedTodo.name,
                         category: state.ui.newCategory ? state.ui.newCategory : state.byId[action.id].category,
-                        details: action.details,
-                        isCompleted: action.status
+                        details: action.editedTodo.details,
+                        isCompleted: action.editedTodo.status
                     }
                 },
                 ui: {

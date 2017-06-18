@@ -1,8 +1,9 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import * as styles from './toggler.scss';
 
 const Toggler = ({ id, isCollapsed, toggleCategory}) => {
-    const className = (isCollapsed) ? styles.iconOpened : styles.iconClosed;
+    const className = (isCollapsed) ? styles.iconClosed : styles.iconOpened;
     const title = isCollapsed ? 'ellapse' : 'collapse';
 
     return (
@@ -15,9 +16,9 @@ const Toggler = ({ id, isCollapsed, toggleCategory}) => {
 };
 
 Toggler.propTypes = {
+    id: PropTypes.string.isRequired,
     isCollapsed: PropTypes.bool.isRequired,
-    toggleCategory: PropTypes.func.isRequired,
-    id: PropTypes.string.isRequired
+    toggleCategory: PropTypes.func.isRequired
 };
 
 export default Toggler;

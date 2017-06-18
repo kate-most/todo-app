@@ -1,14 +1,17 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { changeSearchName, changeSearchStatus, clearSearchName, clearError, handleTodoStatusChange, handleCategoryStatusChange } from '../../action-creators/index.js';
-import TodoList from './../../components/to-do-list/to-do-list.jsx';
-import Search from './../../components/search/search.jsx';
-import CreateTodo from './../../containers/create-todo/create-todo.jsx';
-import getVisibleTodos from  './../../selectors/to-do-selectors.js';
+import { handleTodoStatusChange } from '../../action-creators/todos';
+import { handleCategoryStatusChange } from '../../action-creators/categories';
+import { changeSearchName, changeSearchStatus, clearSearchName } from '../../action-creators/search';
+import { clearError } from '../../action-creators/common';
+import TodoList from './../../components/to-do-list/to-do-list';
+import Search from './../../components/search/search';
+import CreateTodo from './../../containers/create-todo/create-todo';
+import getVisibleTodos from  './../../selectors/to-do-selectors';
 import * as styles from './todos.scss';
 
-const Todos = ({ params, categories, todos, search, changeSearchName, changeSearchStatus, clearSearchName, clearError, handleTodoStatusChange, handleCategoryStatusChange }) => {
+export const Todos = ({ params, categories, todos, search, changeSearchName, changeSearchStatus, clearSearchName, clearError, handleTodoStatusChange, handleCategoryStatusChange }) => {
     const category = categories.byId[params.category];
 
     return (

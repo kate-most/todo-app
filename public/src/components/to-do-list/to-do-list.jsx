@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react';
-import TodoItem from './../to-do-item/to-do-item.jsx';
+import React from 'react';
+import PropTypes from 'prop-types';
+import TodoItem from './../to-do-item/to-do-item';
 import * as styles from './to-do-list.scss';
 
 const TodoList = ({ params, categories, todos, handleTodoStatusChange, handleCategoryStatusChange }) => {

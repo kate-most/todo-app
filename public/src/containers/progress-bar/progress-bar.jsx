@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import getProgress from  './../../selectors/progress-selectors.js';
+import getProgress from  './../../selectors/progress-selectors';
 import * as styles from './progress-bar.scss';
 
 const ProgressBar = ({ progress }) => {

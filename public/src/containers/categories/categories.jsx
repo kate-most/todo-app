@@ -1,10 +1,11 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { toggleCategory, removeCategory, openModal, handleChooseNewCategory } from '../../action-creators/index.js';
-import CategoriesList from './../../components/categories-list/categories-list.jsx';
+import { toggleCategory, removeCategory, handleChooseNewCategory } from '../../action-creators/categories';
+import { openModal } from '../../action-creators/common';
+import CategoriesList from './../../components/categories-list/categories-list';
 
-const Categories = ({ params, children, categories, todos, toggleCategory, removeCategory, openModal, handleChooseNewCategory }) => (
+export const Categories = ({ params, children, categories, todos, toggleCategory, removeCategory, openModal, handleChooseNewCategory }) => (
     <div>
         <CategoriesList params={params}
                         categories={categories}

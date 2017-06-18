@@ -36,6 +36,10 @@
   margin-right: 10px;
 }
 
+.name {
+  composes: label;
+}
+
 .edit {
   width: 20px;
   height: 20px;

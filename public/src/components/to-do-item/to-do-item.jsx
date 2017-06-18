@@ -1,9 +1,11 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import * as styles from './to-do-item.scss';
 
 const TodoItem = ({ id, todos, categoryId, handleTodoStatusChange, handleCategoryStatusChange }) => {
     const currentTodo = todos.byId[id];
+
     return (
         <div className={styles.container}>
             <input id={id} type='checkbox' className={styles.input} checked={currentTodo.isCompleted} onChange={(event) => {
@@ -11,7 +13,7 @@ const TodoItem = ({ id, todos, categoryId, handleTodoStatusChange, handleCategor
                 handleCategoryStatusChange(categoryId, event.target.id, todos);
             }}/>
             <label htmlFor={id} className={styles.label}/>
-            <label className={styles.label}>
+            <label className={styles.name}>
                 {currentTodo.name}
             </label>
             <Link to={categoryId + '/' + id}>
@@ -36,6 +38,7 @@ TodoItem.propTypes = {
             newCategory: PropTypes.string
         })
     }).isRequired,
+    categoryId: PropTypes.string.isRequired,
     handleTodoStatusChange: PropTypes.func.isRequired,
     handleCategoryStatusChange: PropTypes.func.isRequired
 };
