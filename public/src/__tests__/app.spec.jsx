@@ -100,58 +100,15 @@ describe('<App />', () => {
 
         it('should render <Modal />, if modalIsOpen', () => {
             props = {
-                params: {
-                    category: 'mock_category',
-                    todo: 'mock_todo'
-                },
+                ...props,
                 categories: {
-                    ids: ['mock_category_id_parent', 'mock_category_id_child'],
-                    byId: {
-                        'mock_category_id_parent': {
-                            name: 'mock_category_name',
-                            id: 'mock_category_id_parent',
-                            parentId: '',
-                            children: ['mock_category_id_child'],
-                            isCompleted: true,
-                            isCollapsed: true,
-                            todos: ['mock_todo_id']
-                        },
-                        'mock_category_id_child': {
-                            name: 'mock_category_name',
-                            id: 'mock_category_id_child',
-                            parentId: 'mock_category_id_parent',
-                            children: [],
-                            isCompleted: true,
-                            isCollapsed: true,
-                            todos: []
-                        }
-                    },
+                    ...props.categories,
                     ui: {
-                        editing: true,
-                        modalIsOpen: true,
-                        currentCategoryId: 'mock_category_id_parent',
-                        error: 'mock_category_error'
+                        ...props.categories.ui,
+                        modalIsOpen: true
                     }
-                },
-                todos: {
-                    ids: ['mock_todo_id'],
-                    byId: {
-                        'mock_todo_id': {
-                            name: 'mock_todo_name',
-                            category: 'mock_category_id_parent',
-                            details: 'mock_todo_details',
-                            isCompleted: true
-                        }
-                    },
-                    ui: {
-                        error: 'mock_todo_error',
-                        newCategory: 'mock_category_id_child'
-                    }
-                },
-                closeModal: jest.fn(),
-                handleRouteChange: jest.fn()
+                }
             };
-
             wrapper = shallow(<App {...props} />);
 
             expect(wrapper.find(Modal).length).toBe(1);
@@ -159,56 +116,15 @@ describe('<App />', () => {
 
         it('should render <CreateCategory /> with data-test value child-creation, if modalIsOpen and editing is false', () => {
             props = {
-                params: {
-                    category: 'mock_category',
-                    todo: 'mock_todo'
-                },
+                ...props,
                 categories: {
-                    ids: ['mock_category_id_parent', 'mock_category_id_child'],
-                    byId: {
-                        'mock_category_id_parent': {
-                            name: 'mock_category_name',
-                            id: 'mock_category_id_parent',
-                            parentId: '',
-                            children: ['mock_category_id_child'],
-                            isCompleted: true,
-                            isCollapsed: true,
-                            todos: ['mock_todo_id']
-                        },
-                        'mock_category_id_child': {
-                            name: 'mock_category_name',
-                            id: 'mock_category_id_child',
-                            parentId: 'mock_category_id_parent',
-                            children: [],
-                            isCompleted: true,
-                            isCollapsed: true,
-                            todos: []
-                        }
-                    },
+                    ...props.categories,
                     ui: {
-                        editing: false,
+                        ...props.categories.ui,
                         modalIsOpen: true,
-                        currentCategoryId: 'mock_category_id_parent',
-                        error: 'mock_category_error'
+                        editing: false
                     }
-                },
-                todos: {
-                    ids: ['mock_todo_id'],
-                    byId: {
-                        'mock_todo_id': {
-                            name: 'mock_todo_name',
-                            category: 'mock_category_id_parent',
-                            details: 'mock_todo_details',
-                            isCompleted: true
-                        }
-                    },
-                    ui: {
-                        error: 'mock_todo_error',
-                        newCategory: 'mock_category_id_child'
-                    }
-                },
-                closeModal: jest.fn(),
-                handleRouteChange: jest.fn()
+                }
             };
 
             wrapper = shallow(<App {...props} />);
@@ -218,56 +134,14 @@ describe('<App />', () => {
 
         it('should render <CreateCategory /> with data-test value editing, if modalIsOpen and editing is true', () => {
             props = {
-                params: {
-                    category: 'mock_category',
-                    todo: 'mock_todo'
-                },
+                ...props,
                 categories: {
-                    ids: ['mock_category_id_parent', 'mock_category_id_child'],
-                    byId: {
-                        'mock_category_id_parent': {
-                            name: 'mock_category_name',
-                            id: 'mock_category_id_parent',
-                            parentId: '',
-                            children: ['mock_category_id_child'],
-                            isCompleted: true,
-                            isCollapsed: true,
-                            todos: ['mock_todo_id']
-                        },
-                        'mock_category_id_child': {
-                            name: 'mock_category_name',
-                            id: 'mock_category_id_child',
-                            parentId: 'mock_category_id_parent',
-                            children: [],
-                            isCompleted: true,
-                            isCollapsed: true,
-                            todos: []
-                        }
-                    },
+                    ...props.categories,
                     ui: {
-                        editing: true,
-                        modalIsOpen: true,
-                        currentCategoryId: 'mock_category_id_parent',
-                        error: 'mock_category_error'
+                        ...props.categories.ui,
+                        modalIsOpen: true
                     }
-                },
-                todos: {
-                    ids: ['mock_todo_id'],
-                    byId: {
-                        'mock_todo_id': {
-                            name: 'mock_todo_name',
-                            category: 'mock_category_id_parent',
-                            details: 'mock_todo_details',
-                            isCompleted: true
-                        }
-                    },
-                    ui: {
-                        error: 'mock_todo_error',
-                        newCategory: 'mock_category_id_child'
-                    }
-                },
-                closeModal: jest.fn(),
-                handleRouteChange: jest.fn()
+                }
             };
 
             wrapper = shallow(<App {...props} />);
@@ -279,58 +153,23 @@ describe('<App />', () => {
             expect(wrapper.find(Error).length).toBe(1);
         });
 
-        it('should render <Error /> if it exists it todos', () => {
+        it('should render <Error /> if it exists in todos', () => {
             props = {
-                params: {
-                    category: 'mock_category',
-                    todo: 'mock_todo'
-                },
+                ...props,
                 categories: {
-                    ids: ['mock_category_id_parent', 'mock_category_id_child'],
-                    byId: {
-                        'mock_category_id_parent': {
-                            name: 'mock_category_name',
-                            id: 'mock_category_id_parent',
-                            parentId: '',
-                            children: ['mock_category_id_child'],
-                            isCompleted: true,
-                            isCollapsed: true,
-                            todos: ['mock_todo_id']
-                        },
-                        'mock_category_id_child': {
-                            name: 'mock_category_name',
-                            id: 'mock_category_id_child',
-                            parentId: 'mock_category_id_parent',
-                            children: [],
-                            isCompleted: true,
-                            isCollapsed: true,
-                            todos: []
-                        }
-                    },
+                    ...props.categories,
                     ui: {
-                        editing: true,
-                        modalIsOpen: false,
-                        currentCategoryId: 'mock_category_id_parent',
+                        ...props.categories.ui,
                         error: ''
                     }
                 },
                 todos: {
-                    ids: ['mock_todo_id'],
-                    byId: {
-                        'mock_todo_id': {
-                            name: 'mock_todo_name',
-                            category: 'mock_category_id_parent',
-                            details: 'mock_todo_details',
-                            isCompleted: true
-                        }
-                    },
+                    ...props.todos,
                     ui: {
-                        error: 'mock_error',
-                        newCategory: 'mock_category_id_child'
+                        ...props.todos.ui,
+                        error: 'mock_error'
                     }
-                },
-                closeModal: jest.fn(),
-                handleRouteChange: jest.fn()
+                }
             };
 
             wrapper = shallow(<App {...props} />);

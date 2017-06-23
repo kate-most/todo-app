@@ -13,7 +13,7 @@ import { Link } from 'react-router';
 
 describe('<Category />', () => {
 
-    let props;
+    let props, wrapper;
 
     beforeEach(() => {
         setup();
@@ -93,12 +93,12 @@ describe('<Category />', () => {
             openModal: jest.fn(),
             handleChooseNewCategory: jest.fn()
         };
+
+        wrapper = shallow(<Category {...props} />);
     }
 
     describe('#render', () => {
         it('should render <Toggler /> if category has children', () => {
-            const wrapper = shallow(<Category {...props} />);
-
             expect(wrapper.find(Toggler).length).toBe(1);
         });
 
@@ -109,19 +109,14 @@ describe('<Category />', () => {
         });
 
         it('should render h4 tag', () => {
-            const wrapper = shallow(<Category {...props} />);
-
             expect(wrapper.find('h4').length).toBe(1);
         });
 
         it('should contain <Link />', () => {
-            const wrapper = shallow(<Category {...props} />);
-
-            expect(wrapper.find(Link).length).toBe(1);
+           expect(wrapper.find(Link).length).toBe(1);
         });
 
         it('should have <Link /> with proper to prop', () => {
-            const wrapper = shallow(<Category {...props} />);
             const expected = '/mock_category_id_parent';
             const link = wrapper.find(Link);
 
@@ -129,7 +124,6 @@ describe('<Category />', () => {
         });
 
         it('should render <CategoriesList /> if category has children and is not collapsed', () => {
-            const wrapper = shallow(<Category {...props} />);
             expect(wrapper.find(CategoriesList).length).toBe(1);
         });
 
@@ -146,8 +140,6 @@ describe('<Category />', () => {
         });
 
         it('should render move button if todo exists, is being edited and does not belong to current category', () => {
-            const wrapper = shallow(<Category {...props} />);
-
             expect(wrapper.find('.button-move').length).toBe(1);
         });
 
@@ -193,7 +185,6 @@ describe('<Category />', () => {
 
     describe('#events', () => {
         it('should call handleChooseNewCategory with passed id on button-move click', () => {
-            const wrapper = shallow(<Category {...props} />);
             const button = wrapper.find('.button-move');
 
             button.simulate('click', {});
